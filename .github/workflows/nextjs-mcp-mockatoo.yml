@@ -1,0 +1,39 @@
+name: Next.js MCP Mockatoo example
+
+on:
+  push:
+    paths:
+      - "nextjs-mcp/**"
+      - ".github/workflows/nextjs-mcp-mockatoo.yml"
+  pull_request:
+    paths:
+      - "nextjs-mcp/**"
+      - ".github/workflows/nextjs-mcp-mockatoo.yml"
+
+jobs:
+  sign-in:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: nextjs-mcp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Skip credentialed sign-in without secrets
+        if: env.MOCKATOO_TEST_EMAIL == '' || env.MOCKATOO_TEST_PASSWORD == ''
+        run: echo "::notice::MOCKATOO_TEST_EMAIL and MOCKATOO_TEST_PASSWORD are not set; the credentialed sign-in test is skipped."
+        env:
+          MOCKATOO_TEST_EMAIL: ${{ secrets.MOCKATOO_TEST_EMAIL }}
+          MOCKATOO_TEST_PASSWORD: ${{ secrets.MOCKATOO_TEST_PASSWORD }}
+      - run: pnpm test
+        env:
+          MOCKATOO_TEST_EMAIL: ${{ secrets.MOCKATOO_TEST_EMAIL }}
+          MOCKATOO_TEST_PASSWORD: ${{ secrets.MOCKATOO_TEST_PASSWORD }}

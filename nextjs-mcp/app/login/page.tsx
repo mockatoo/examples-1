@@ -54,6 +54,14 @@ export default function Login() {
 			<button
 				className="border-white text-whtie"
 				onClick={async () => {
+					await authClient.signIn.social({ provider: "github" });
+				}}
+			>
+				<p>Sign in with GitHub</p>
+			</button>
+			<button
+				className="border-white text-whtie"
+				onClick={async () => {
 					const { error } = await authClient.signOut();
 				}}
 			>

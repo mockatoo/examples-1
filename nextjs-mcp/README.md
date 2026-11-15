@@ -91,3 +91,16 @@ export { handler as GET, handler as POST, handler as DELETE };
 ```
 
 And that's it!!
+
+## Local GitHub sign-in with Mockatoo
+
+In development, the GitHub button uses Mockatoo, so you can exercise the OAuth flow without registering a GitHub application. Production keeps Better Auth's regular GitHub provider. Set `MOCKATOO_TEST_EMAIL` and `MOCKATOO_TEST_PASSWORD` to run the credentialed Playwright test.
+
+Install dependencies and start the example:
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Open <http://localhost:3000/login> and choose **Sign in with GitHub**.
